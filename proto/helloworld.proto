@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+// 这是一个测试例子， 用来演示如何使用proto3来定义一个简单的数据结构
+package com.myfmes.github.grpc.example;
+
+option java_multiple_files = true;
+option java_package = "com.myfmes.github.grpc.example";
+option java_outer_classname = "HelloWorldProto";
+option go_package = "./proto/hello";
+
+// The greeting service definition.
+service MyService {
+    // Sends a greeting
+    rpc SayHello (HelloRequest) returns (HelloReply) {
+    }
+}
+
+// The request message containing the user's name.
+message HelloRequest {
+    string sessionId = 1;
+    string traceId = 2;
+    string name = 3;
+    string code = 4;
+    string desc = 5;
+}
+
+// The response message containing the greetings
+message HelloReply {
+    string message = 1;
+}
