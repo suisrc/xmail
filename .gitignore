@@ -13,8 +13,8 @@ venv/*
 
 __*
 docker
-docs/_build
-docs/generated
+doc/_build
+doc/generated
 
 static/**/*.png
 
