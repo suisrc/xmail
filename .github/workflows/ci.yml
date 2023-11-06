@@ -5,7 +5,7 @@ on:
     branches: [ xxxx ]
 
 env:
-  DOCKER_IMAGE_NAME: suisrc/klipper
+  DOCKER_IMAGE_NAME: suisrc/xxxx
   DOCKER_VERSION: '0.0.1-xxxx'
 
   GITHUB_REGISTRY: ghcr.io
@@ -23,10 +23,24 @@ jobs:
         run: |
           docker build -t image .
 
-      # - name: Push github image
+      - name: Push github image
+        run: |
+          REGISTRY_URL=$GITHUB_REGISTRY
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login $REGISTRY_URL -u ${{ github.actor }} --password-stdin
+
+          IMAGE_ID=$REGISTRY_URL/$DOCKER_IMAGE_NAME
+          echo IMAGE_ID=$IMAGE_ID
+
+          VERSION=$DOCKER_VERSION
+          echo VERSION=$VERSION
+
+          docker tag image $IMAGE_ID:$VERSION
+          docker push $IMAGE_ID:$VERSION
+
+      # - name: Push docker image
       #   run: |
-      #     REGISTRY_URL=$GITHUB_REGISTRY
-      #     echo "${{ secrets.GITHUB_TOKEN }}" | docker login $REGISTRY_URL -u ${{ github.actor }} --password-stdin
+      #     REGISTRY_URL=$DOCKER_REGISTRY
+      #     echo "${{ secrets.DOCKER_TOKEN }}" | docker login $REGISTRY_URL -u ${{ secrets.DOCKER_USER }} --password-stdin
 
       #     IMAGE_ID=$REGISTRY_URL/$DOCKER_IMAGE_NAME
       #     echo IMAGE_ID=$IMAGE_ID
@@ -37,30 +51,16 @@ jobs:
       #     docker tag image $IMAGE_ID:$VERSION
       #     docker push $IMAGE_ID:$VERSION
 
-      - name: Push docker image
-        run: |
-          REGISTRY_URL=$DOCKER_REGISTRY
-          echo "${{ secrets.DOCKER_TOKEN }}" | docker login $REGISTRY_URL -u ${{ secrets.DOCKER_USER }} --password-stdin
+      # - name: Push quay image
+      #   run: |
+      #     REGISTRY_URL=$QUAY_REGISTRY
+      #     echo "${{ secrets.QUAY_TOKEN }}" | docker login $REGISTRY_URL -u ${{ secrets.QUAY_USER }} --password-stdin
 
-          IMAGE_ID=$REGISTRY_URL/$DOCKER_IMAGE_NAME
-          echo IMAGE_ID=$IMAGE_ID
+      #     IMAGE_ID=$REGISTRY_URL/$DOCKER_IMAGE_NAME
+      #     echo IMAGE_ID=$IMAGE_ID
 
-          VERSION=$DOCKER_VERSION
-          echo VERSION=$VERSION
+      #     VERSION=$DOCKER_VERSION
+      #     echo VERSION=$VERSION
 
-          docker tag image $IMAGE_ID:$VERSION
-          docker push $IMAGE_ID:$VERSION
-
-      - name: Push quay image
-        run: |
-          REGISTRY_URL=$QUAY_REGISTRY
-          echo "${{ secrets.QUAY_TOKEN }}" | docker login $REGISTRY_URL -u ${{ secrets.QUAY_USER }} --password-stdin
-
-          IMAGE_ID=$REGISTRY_URL/$DOCKER_IMAGE_NAME
-          echo IMAGE_ID=$IMAGE_ID
-
-          VERSION=$DOCKER_VERSION
-          echo VERSION=$VERSION
-
-          docker tag image $IMAGE_ID:$VERSION
-          docker push $IMAGE_ID:$VERSION
+      #     docker tag image $IMAGE_ID:$VERSION
+      #     docker push $IMAGE_ID:$VERSION
