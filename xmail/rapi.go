@@ -1,6 +1,7 @@
 package xmail
 
 import (
+	"mime"
 	"time"
 	"vkc/core"
 
@@ -55,7 +56,7 @@ func (aa *MailManager) GetEmailHtml(ctx *gin.Context) {
 	ctx.Header("Msg-Date", eml.Date.Format(time.RFC1123Z))
 	ctx.Header("From", eml.From)
 	ctx.Header("To", eml.To)
-	ctx.Header("Subject", eml.Subject)
+	ctx.Header("Subject", mime.QEncoding.Encode("utf-8", eml.Subject))
 	ctx.String(200, eml.Html)
 }
 
@@ -76,7 +77,7 @@ func (aa *MailManager) GetEmailText(ctx *gin.Context) {
 	ctx.Header("Msg-Date", eml.Date.Format(time.RFC1123Z))
 	ctx.Header("From", eml.From)
 	ctx.Header("To", eml.To)
-	ctx.Header("Subject", eml.Subject)
+	ctx.Header("Subject", mime.QEncoding.Encode("utf-8", eml.Subject))
 	ctx.String(200, eml.Text)
 }
 
