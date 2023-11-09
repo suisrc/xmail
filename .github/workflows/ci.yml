@@ -2,11 +2,11 @@ name: build-docker
 
 on:
   push:
-    branches: [ xxxx ]
+    branches: [ master ]
 
 env:
-  DOCKER_IMAGE_NAME: suisrc/xxxx
-  DOCKER_VERSION: '0.0.1-xxxx'
+  DOCKER_IMAGE_NAME: suisrc/xmail
+  DOCKER_VERSION: '0.0.1'
 
   GITHUB_REGISTRY: ghcr.io
   QUAY_REGISTRY: quay.io
