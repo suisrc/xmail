@@ -1,30 +1,7 @@
 # 说明
 
+这是什么？
 
-致力于快速搭建基于 gin + wire 服务框架，应用于应用的快速开发
+xmail 是一个非常简易的程序，来帮助我们搭建一个接受邮件的服务，他借助 cloudflare email worker 接受邮件，使用 cloudflare d1 缓存邮件， 然后通过 xmail 来拉取有 cloudflare worker 提供的 api 获取邮件并缓存到本地 mongo 上进行查看。由 xmail 提供的服务进行查看。
 
-如果需要完成的鉴权体系，推荐使用kratos-golang版本， 该 vkc 版本只是一个简单的框架，不包含鉴权体系
-同时， vkc 是为效率而生， 因此唯一推荐持久化数据库为 mongodb。如果使用 mysql 推荐使用 kratos-golang 版本
-
-## golang
-
-``` bash
-go mod init vkc
-go mod tidy
-go run main.go
-go build
-
-
-```
-
-## 自签名证书
-
-``` bash
-cd shconf/cert
-
-# 生成私钥
-openssl genrsa -out default.key.pem 2048
-
-# 生成自签名证书
-openssl req -new -x509 -key default.key -out default.crt.pem -days 36500
-```
+因此你可以搭建属于自己的邮件接收器，将来自不同地方的邮件进行汇集。同事可以通过一些监听，完成更好的脚本处理能力。
