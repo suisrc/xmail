@@ -1,6 +1,7 @@
 package xmail
 
 import (
+	"time"
 	"vkc/core"
 
 	"github.com/gin-gonic/gin"
@@ -50,6 +51,11 @@ func (aa *MailManager) GetEmailHtml(ctx *gin.Context) {
 		return // 服务器错误
 	}
 	ctx.Header("Content-Type", "text/html; charset=utf-8")
+	ctx.Header("Msg-Id", eml.MsgId)
+	ctx.Header("Msg-Date", eml.Date.Format(time.RFC1123Z))
+	ctx.Header("From", eml.From)
+	ctx.Header("To", eml.To)
+	ctx.Header("Subject", eml.Subject)
 	ctx.String(200, eml.Html)
 }
 
