@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y \
 
 COPY --from=builder /build/_app  /app/app
 COPY --from=builder /build/static  /app/static
-COPY --from=builder /build/doc/config.toml  /app/config.toml
+COPY --from=builder /build/shconf/config.toml  /app/config.toml
 
 WORKDIR /app
 EXPOSE 80 443
