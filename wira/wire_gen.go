@@ -8,8 +8,10 @@ package wira
 
 import (
 	"vkc/app"
+	"vkc/mgo"
 	"vkc/vpp"
 	"vkc/wira/module"
+	"vkc/xmail"
 )
 
 // Injectors from wire.go:
@@ -21,13 +23,20 @@ func NewApp() (vpp.ServeRunner, func(), error) {
 	healthz := vpp.NewHealthz(engine)
 	injector := module.Injector{}
 	iRouter := vpp.NewRouter(engine)
-	index := &app.Index{}
-	demo := &app.Demo{}
+	database, cleanup, err := mgo.NewDefaultDatabase()
+	if err != nil {
+		return nil, nil, err
+	}
+	mailManager := &xmail.MailManager{
+		DS: database,
+	}
+	email := &app.Email{
+		EM: mailManager,
+	}
 	appInjector := app.Injector{
 		Engine: engine,
 		Router: iRouter,
-		Index:  index,
-		Demo:   demo,
+		Email:  email,
 	}
 	wiraApp := &App{
 		Engine: engine,
@@ -36,5 +45,6 @@ func NewApp() (vpp.ServeRunner, func(), error) {
 		APP:    appInjector,
 	}
 	return wiraApp, func() {
+		cleanup()
 	}, nil
 }

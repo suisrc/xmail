@@ -12,8 +12,9 @@ import (
 // WireSet wire注入声明
 var WireSet = wire.NewSet(
 	vpp.NewRouter, // router
-	wire.Struct(new(Demo), "*"),
-	wire.Struct(new(Index), "*"),
+	// wire.Struct(new(Demo), "*"),
+	// wire.Struct(new(Index), "*"),
+	wire.Struct(new(Email), "*"),
 
 	// wire.Struct(new(apis.HelloworldServer), "*"),
 	wire.Struct(new(Injector), "*"), // 注册器
@@ -26,8 +27,9 @@ type Injector struct {
 	Router gin.IRouter // 根路由
 
 	// Http API
-	Index *Index
-	Demo  *Demo
+	// Index *Index
+	// Demo  *Demo
+	Email *Email
 
 	//==========================================
 	// Grpc 引擎
@@ -40,11 +42,12 @@ type Injector struct {
 // Init 初始化
 func (aa *Injector) PostInit() (func(), error) {
 	// Http API
-	engine := aa.Engine
-	aa.Index.Register(engine) // 首页
+	// engine := aa.Engine
+	// aa.Index.Register(engine) // 首页
 
 	router := aa.Router
-	aa.Demo.Register(router)
+	// aa.Demo.Register(router)
+	aa.Email.Register(router)
 
 	// Grpc API
 	// server := aa.Server
