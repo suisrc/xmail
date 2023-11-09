@@ -59,6 +59,27 @@ func (aa *MailManager) GetEmailHtml(ctx *gin.Context) {
 	ctx.String(200, eml.Html)
 }
 
+// 获取单个邮件的HTML
+func (aa *MailManager) GetEmailText(ctx *gin.Context) {
+	co := &GetEmailCO{}
+	if err := ctx.ShouldBindQuery(co); err != nil {
+		core.ResError2(ctx, err, core.Err400BadParam)
+		return // 参数错误
+	}
+	eml, err := aa.GetEmail2(ctx, co)
+	if err != nil {
+		core.Fix500Logger(ctx, err)
+		return // 服务器错误
+	}
+	ctx.Header("Content-Type", "text/plain; charset=utf-8")
+	ctx.Header("Msg-Id", eml.MsgId)
+	ctx.Header("Msg-Date", eml.Date.Format(time.RFC1123Z))
+	ctx.Header("From", eml.From)
+	ctx.Header("To", eml.To)
+	ctx.Header("Subject", eml.Subject)
+	ctx.String(200, eml.Text)
+}
+
 // 保存邮件
 func (aa *MailManager) InsertEmail(ctx *gin.Context) {
 	bts := ctx.Request.Body

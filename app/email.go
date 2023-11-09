@@ -26,6 +26,7 @@ func (aa *Email) Register(r gin.IRouter) {
 	r.DELETE("eml", aa.Auth, aa.EM.DeleteEmail) // 删除邮件
 
 	r.GET("eml.html", aa.Auth, aa.EM.GetEmailHtml) // 获取单个邮件
+	r.GET("eml.text", aa.Auth, aa.EM.GetEmailText) // 获取单个邮件
 
 	r.GET("eml/sync", aa.Auth, aa.EM.SyncEmailGet)  // 获取同步状态
 	r.POST("eml/sync", aa.Auth, aa.EM.SyncEmailCtl) // 配置同步任务
