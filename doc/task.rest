@@ -1,4 +1,4 @@
-@BASE=http://127.0.0.1:8080
+@BASE=http://127.0.0.1:80
 @AKEY=api_u98gygzzh40yfwuylgi6paan1qrnt1zt
 
 ### 获取同步信息
@@ -8,3 +8,9 @@ x-api-key: {{AKEY}}
 ### 配置同步信息
 POST {{BASE}}/api/eml/sync?active=0
 x-api-key: {{AKEY}}
+
+### 配置同步信息
+POST {{BASE}}/api/eml/sync?active=1
+x-api-key: {{AKEY}}
+
+

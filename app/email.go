@@ -8,6 +8,7 @@ import (
 	"vkc/xmail"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gorilla/websocket"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -15,21 +16,29 @@ import (
 // Email 接口
 type Email struct {
 	EM *xmail.MailManager
+
+	upgrader *websocket.Upgrader
 }
 
 // Register 注册路由
 func (aa *Email) Register(r gin.IRouter) {
+	aa.upgrader = &websocket.Upgrader{}
+
 	r.GET("emls", aa.Auth, aa.EM.GetEmails)     // 获取多个邮件
 	r.GET("eml", aa.Auth, aa.EM.GetEmail)       // 获取单个邮件
 	r.POST("eml", aa.Auth, aa.EM.InsertEmail)   // 保存邮件
 	r.PUT("eml", aa.Auth, aa.EM.UpdateEmail)    // 更新邮件
 	r.DELETE("eml", aa.Auth, aa.EM.DeleteEmail) // 删除邮件
 
-	r.GET("eml.html", aa.Auth, aa.EM.GetEmailHtml) // 获取单个邮件
-	r.GET("eml.text", aa.Auth, aa.EM.GetEmailText) // 获取单个邮件
+	r.GET("eml.html", aa.Auth, aa.EM.GetEmailHtml)   // 获取单个邮件
+	r.GET("eml.text", aa.Auth, aa.EM.GetEmailText)   // 获取单个邮件
+	r.GET("emls.text", aa.Auth, aa.EM.GetEmailsText) // 获取多个邮件
 
 	r.GET("eml/sync", aa.Auth, aa.EM.SyncEmailGet)  // 获取同步状态
 	r.POST("eml/sync", aa.Auth, aa.EM.SyncEmailCtl) // 配置同步任务
+	r.GET("eml/ws", aa.Auth, func(ctx *gin.Context) {
+		aa.EM.SyncEmailWs(ctx, aa.upgrader)
+	}) // 同步任务 websocket
 
 	r.GET("init_token", aa.token) // 初始化令牌
 }

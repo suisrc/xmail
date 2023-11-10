@@ -1,4 +1,4 @@
-@BASE=http://127.0.0.1:8080
+@BASE=http://127.0.0.1:80
 @AKEY=api_u98gygzzh40yfwuylgi6paan1qrnt1zt
 
 ### 初始化访问令牌， 第一个可以初始化，之后需要修改数据库增加访问令牌
@@ -8,12 +8,20 @@ GET {{BASE}}/api/init_token
 GET {{BASE}}/api/emls?zone=&addr=s@suisrc.cn&skip=&limit=
 x-api-key: {{AKEY}}
 
+### 获取所有邮件
+GET {{BASE}}/api/emls.text?zone=&addr=&skip=&limit=2
+x-api-key: {{AKEY}}
+
 ### 获取指定邮件
 GET {{BASE}}/api/eml?zone=&addr=s@suisrc.cn&mid=&state=
 x-api-key: {{AKEY}}
 
 ### 获取指定邮件的内容
 GET {{BASE}}/api/eml.html?zone=&addr=s@suisrc.cn&mid=&state=
+x-api-key: {{AKEY}}
+
+### 获取指定邮件的内容
+GET {{BASE}}/api/eml.text?zone=&mid=&state=&addr=
 x-api-key: {{AKEY}}
 
 ### 增加邮件

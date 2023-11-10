@@ -37,6 +37,7 @@ type GetEmailsCO struct {
 	Addr  string `form:"addr"`  // 邮箱地址
 	Skip  int    `form:"skip"`  // 跳过多少条, 默认0条
 	Limit int    `form:"limit"` // 限制多少条, 默认10条
+	Show  bool   `form:"show"`  // 是否显示邮件内容
 }
 
 func (aa *MailManager) GetEmails2(ctx context.Context, co *GetEmailsCO) ([]*Mail, error) {

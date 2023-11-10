@@ -25,16 +25,16 @@ type MailRaw struct {
 }
 
 // Zone return the zone of the mail
-func (aa *Mail) SetZone1() string {
+func (aa *Mail) SetZone1() {
 	if aa.To == "" {
-		return ""
+		return
 	}
 	idx := strings.Index(aa.To, "@") + 1
 	end := strings.Index(aa.To[idx:], ">")
 	if end < 0 {
-		return aa.To[strings.Index(aa.To, "@")+1:]
+		aa.Zone = aa.To[strings.Index(aa.To, "@")+1:]
 	} else {
-		return aa.To[idx : idx+end]
+		aa.Zone = aa.To[idx : idx+end]
 	}
 }
 
