@@ -87,6 +87,7 @@ func (aa *MailManager) SyncEmailRun() {
 	}()
 	// 同步业务
 	for aa.ST.State.Running {
+		aa.SleepMailSync(1, "", false) // 每次同步间隔
 		aa.ST.State.LastSyncAt = time.Now()
 		aa.ST.State.ReqCnt++ // 请求次数
 
@@ -96,20 +97,20 @@ func (aa *MailManager) SyncEmailRun() {
 		err := gout.GET(C.XMail.SyncUri).BindBody(&data).Code(&code).Do()
 		sec := C.XMail.SyncSec
 		if err != nil {
-			aa.SleepMailSync(sec, "request network err: "+err.Error())
+			aa.SleepMailSync(sec, "request network err: "+err.Error(), true)
 			continue // 网络错误
 		}
 		if code != 200 {
-			aa.SleepMailSync(sec, "request content err: code -> "+strconv.Itoa(code))
+			aa.SleepMailSync(sec, "request content err: code -> "+strconv.Itoa(code), true)
 			continue // 内容错误
 		}
 		result := &EmailTemp{}
 		if err := json.Unmarshal(data, &result); err != nil {
-			aa.SleepMailSync(sec, "request unmarshal err: "+err.Error())
+			aa.SleepMailSync(sec, "request unmarshal err: "+err.Error(), true)
 			continue // 解析错误
 		}
 		if len(result.Data) == 0 {
-			aa.SleepMailSync(sec, "")
+			aa.SleepMailSync(sec, "", true)
 			continue // 没有新邮件
 		}
 
@@ -127,13 +128,15 @@ func (aa *MailManager) SyncEmailRun() {
 	}
 }
 
-func (aa *MailManager) SleepMailSync(sec int, err string) {
+func (aa *MailManager) SleepMailSync(sec int, err string, nxt bool) {
 	if err != "" {
 		// 记录错误
 		aa.ST.State.LastError = err
 	}
-	// 下一次同步时间
-	aa.ST.State.NextSyncAt = time.Now().Add(time.Duration(sec) * time.Second)
+	if nxt {
+		// 下一次同步时间
+		aa.ST.State.NextSyncAt = time.Now().Add(time.Duration(sec) * time.Second)
+	}
 	// 同步中断
 	select {
 	case ctl := <-aa.ST.CtlMS:

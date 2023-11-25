@@ -128,7 +128,6 @@ func (aa *MailManager) InsertEmail2(ctx context.Context, bts io.Reader) (*Mail, 
 	if err != nil {
 		return nil, core.ErrorOf("S_EML_MAIL_INFO", "Error: "+err.Error())
 	}
-	RFC1123Z := "Mon, _2 Jan 2006 15:04:05 -0700" // time.RFC1123Z
 	date0 := eml.GetHeader("Date")
 	if date0 == "" {
 		return nil, core.ErrorOf("S_EML_MAIL_INFO", "Date is required")
@@ -150,9 +149,12 @@ func (aa *MailManager) InsertEmail2(ctx context.Context, bts io.Reader) (*Mail, 
 	}
 	data.MsgId = strings.ReplaceAll(data.MsgId, "+", "-")
 
-	date, err := time.Parse(RFC1123Z, date0)
+	date, err := time.Parse("Mon, _2 Jan 2006 15:04:05 -0700", date0)
 	if err != nil {
-		return nil, core.ErrorOf("S_EML_MAIL_INFO", "Date is invalid: "+err.Error())
+		date, err = time.Parse("Mon, _2 Jan 2006 15:04:05 -0700 (MST)", date0)
+		if err != nil {
+			return nil, core.ErrorOf("S_EML_MAIL_INFO", "Date is invalid: "+err.Error())
+		}
 	}
 	data.Date = date
 	data.SetZone1()
